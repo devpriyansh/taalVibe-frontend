@@ -25,7 +25,7 @@ const GoogleAuthButton = ({ isSignup = false, onError }) => {
         const res = await googleLogin(tokenResponse.access_token);
         
         if (res.success) {
-          navigate('/parent-dashboard');
+          navigate('/dashboard');
         } else if (onError) {
           onError(res.message);
         }

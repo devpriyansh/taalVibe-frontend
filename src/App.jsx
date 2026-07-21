@@ -1,27 +1,8 @@
 import React, { Suspense, lazy } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import { AuthProvider } from './contexts/AuthContext'
-import { KidProvider } from './contexts/KidContext'
-import { RewardProvider } from './contexts/RewardContext'
 import ProtectedRoute from './components/common/ProtectedRoute'
 import RootLayout from './layouts/RootLayout'
-import { ClassProvider } from './contexts/ClassContext';
-import ClassSelection from './pages/ClassSelection';
-import ClassDashboard from './pages/ClassDashboard';
-import LessonActivity from './pages/LessonActivity';
-import QuizActivity from './pages/QuizActivity';
-import ColoringSelection from './pages/ColoringSelection';
-import ColoringGame from './pages/ColoringGame';
-import MemoryGame from './pages/MemoryGame';
-import DragDropGame from './pages/DragDropGame';
-import PuzzleGame from './pages/PuzzleGame';
-import RainbowSorting from './pages/RainbowSorting';
-import LetterBuilder from './pages/LetterBuilder';
-import ShadowMatch from './pages/ShadowMatch';
-import NumberFishing from './pages/NumberFishing';
-import StoryBuilder from './pages/StoryBuilder';
-import AITutorPage from './pages/AITutorPage';
 import WakeUpLoader from './components/common/WakeUpLoader';
 import FunLoader from './components/common/FunLoader';
 import FloatingBackground from './components/common/FloatingBackground';
@@ -30,73 +11,33 @@ import FloatingBackground from './components/common/FloatingBackground';
 const Landing = lazy(() => import('./pages/Landing'))
 const Login = lazy(() => import('./pages/Login'))
 const Signup = lazy(() => import('./pages/Signup'))
-const ParentDashboard = lazy(() => import('./pages/ParentDashboard'))
-const ChildProfiles = lazy(() => import('./pages/ChildProfiles'))
-const KidHome = lazy(() => import('./pages/KidHome'))
-const LearningModules = lazy(() => import('./pages/LearningModules'))
-const ActivityPage = lazy(() => import('./pages/LearningModules/ActivityPage'))
-const Progress = lazy(() => import('./pages/Progress'))
-const ProfileSettings = lazy(() => import('./pages/ProfileSettings'))
-const Rewards = lazy(() => import('./pages/Rewards'))
-const PublicPlayDashboard = lazy(() => import('./pages/PublicPlayDashboard'))
+const Dashboard = lazy(() => import('./pages/Dashboard'))
 
 function App() {
   return (
     <AuthProvider>
-      <KidProvider>
-        <RewardProvider>
-          <ClassProvider>
-            <WakeUpLoader>
-              <Suspense fallback={<div className="flex items-center justify-center h-full w-full app-frame"><FunLoader message="Loading..." /></div>}>
-                <div className="app-frame bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 relative overflow-hidden">
-                  <FloatingBackground />
+      <WakeUpLoader>
+        <Suspense fallback={<div className="flex items-center justify-center h-full w-full app-frame"><FunLoader message="Loading..." /></div>}>
+          <div className="app-frame bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 relative overflow-hidden">
+            <FloatingBackground />
 
-
-                  <Routes>
+            <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               
-              {/* Public Game & Play Routes */}
-              <Route path="/play" element={<PublicPlayDashboard />} />
-              <Route path="/coloring" element={<ColoringSelection />} />
-              <Route path="/coloring/:id" element={<ColoringGame />} />
-              <Route path="/memory/:quizId" element={<MemoryGame />} />
-              <Route path="/dragdrop/:quizId" element={<DragDropGame />} />
-              <Route path="/puzzle/:quizId" element={<PuzzleGame />} />
-
-              
               <Route element={<ProtectedRoute />}>
                 <Route element={<RootLayout />}>
-                  <Route path="/parent-dashboard" element={<ParentDashboard />} />
-                  <Route path="/child-profiles" element={<ChildProfiles />} />
-                  <Route path="/kid-home" element={<KidHome />} />
-                  <Route path="/modules" element={<LearningModules />} />
-                  <Route path="/activity/:moduleId" element={<ActivityPage />} />
-                  <Route path="/progress" element={<Progress />} />
-                  <Route path="/profile-settings" element={<ProfileSettings />} />
-                  <Route path="/rewards" element={<Rewards />} />
-                  <Route path="/class-selection" element={<ClassSelection />} />
-                  <Route path="/class-dashboard" element={<ClassDashboard />} />
-                  <Route path="/lesson/:moduleId/:lessonIndex" element={<LessonActivity />} />
-                  <Route path="/quiz/:quizId" element={<QuizActivity />} />
-                  <Route path="/sorting/:quizId" element={<RainbowSorting />} />
-                  <Route path="/letter/:quizId" element={<LetterBuilder />} />
-                  <Route path="/shadow/:quizId" element={<ShadowMatch />} />
-                  <Route path="/fishing/:quizId" element={<NumberFishing />} />
-                  <Route path="/story/:quizId" element={<StoryBuilder />} />
-                  <Route path="/ai-tutor" element={<AITutorPage />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/profile-settings" element={<Navigate to="/dashboard" />} />
                 </Route>
               </Route>
                             
-                <Route path="*" element={<Navigate to="/" />} />
-                  </Routes>
-                </div>
-              </Suspense>
-            </WakeUpLoader>
-          </ClassProvider>
-        </RewardProvider>
-      </KidProvider>
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </div>
+        </Suspense>
+      </WakeUpLoader>
     </AuthProvider>
   )
 }

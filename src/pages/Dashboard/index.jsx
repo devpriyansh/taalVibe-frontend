@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, LogOut, Bell, Volume2, Key, Save, Phone, Mail, ChevronRight, Shield, Zap, Loader2 } from 'lucide-react';
 
-const ProfileSettings = () => {
+const Dashboard = () => {
   const { user, logout, updateProfile } = useAuth();
   const navigate = useNavigate();
 
@@ -361,4 +361,4 @@ const ProfileSettings = () => {
   );
 };
 
-export default ProfileSettings;
+export default Dashboard;

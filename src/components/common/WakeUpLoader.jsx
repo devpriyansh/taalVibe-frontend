@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import FunLoader from './FunLoader';
-import Mascot from './Mascot';
 
 const _envUrl = import.meta.env.VITE_API_BASE_URL;
 const API_BASE_URL = _envUrl ? (_envUrl.endsWith('/api/v1') ? _envUrl : _envUrl.replace(/\/$/, '') + '/api/v1') : 'https://kid-s-backend.onrender.com/api/v1';
@@ -100,21 +99,6 @@ const WakeUpLoader = ({ children }) => {
         />
 
         <div className="relative z-10 flex flex-col items-center max-w-xl text-center p-8 glass-card">
-          <motion.div
-            animate={{ 
-              y: [0, -20, 0],
-              rotate: [-5, 5, -5]
-            }}
-            transition={{ 
-              duration: 4, 
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            className="mb-8"
-          >
-            <Mascot className="w-48 h-48 drop-shadow-xl" />
-          </motion.div>
-          
           <AnimatePresence mode="wait">
             {!showMessage ? (
               <motion.div
@@ -152,7 +136,7 @@ const WakeUpLoader = ({ children }) => {
                   </h2>
                 </div>
                 <p className="text-lg font-bold font-nunito text-slate-500 mt-2 glass-panel p-3 drop-shadow-sm border-white/60">
-                  Hootie is putting on his glasses... this might take a minute! 🦉
+                  This might take a minute!
                 </p>
                 
                 {/* Fun progress indicator */}
