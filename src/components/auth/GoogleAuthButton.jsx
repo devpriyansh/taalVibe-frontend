@@ -46,11 +46,11 @@ const GoogleAuthButton = ({ isSignup = false, onError }) => {
       type="button"
       onClick={() => login()}
       disabled={isLoading}
-      className={`w-full h-12 flex items-center justify-center gap-3 px-6 rounded-xl bg-white border border-gray-300 hover:bg-gray-50 hover:border-gray-400 shadow-sm transition-all font-semibold text-gray-700 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+      className={`w-full h-12 flex items-center justify-center gap-3 px-6 rounded-xl bg-black/40 border border-white/10 hover:bg-black/60 hover:border-white/25 shadow-sm transition-all font-semibold text-white ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
     >
       {isLoading ? (
         <span className="flex items-center gap-2">
-          <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
           Please wait...
         </span>
       ) : (

@@ -1,36 +1,42 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import { motion } from 'framer-motion';
-import FloatingCloud from '../../components/common/FloatingCloud';
-import { Rocket, ShieldCheck } from 'lucide-react';
 
 const Landing = () => {
+  const { user } = useAuth();
+
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   return (
-    <div className="flex-1 w-full h-full flex flex-col items-center justify-center p-4 bg-transparent relative overflow-hidden">
-      <FloatingCloud />
-      
+    <div className="flex h-screen w-full bg-sonora-base items-center justify-center p-4 overflow-hidden relative">
+      {/* Background ambient light */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-sonora-primary/20 rounded-full blur-[150px] pointer-events-none"></div>
+
       <motion.div
         initial={{ y: -50, opacity: 0, scale: 0.9 }}
         animate={{ y: 0, opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, type: 'spring', bounce: 0.5 }}
-        className="text-center z-10 w-full max-w-5xl glass-card p-12 md:p-16 flex flex-col items-center"
+        className="text-center z-10 w-full max-w-4xl bg-sonora-surface/80 backdrop-blur-xl border border-white/5 rounded-3xl shadow-2xl p-12 md:p-16 flex flex-col items-center"
       >
-        <div className="mb-8 relative flex flex-col items-center gap-6">
-          <div className="absolute inset-0 bg-white/20 blur-xl rounded-full"></div>
-          <span className="text-6xl sm:text-[5rem] font-baloo font-black tracking-wide text-gray-800">
-            Boilerplate
-          </span>
+        <div className="mb-6 relative flex flex-col items-center gap-6">
+          <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-white/10 shadow-[0_0_50px_rgba(30,215,96,0.2)] bg-black flex items-center justify-center p-3">
+            <img src="/logo.png" alt="TaalVibe Logo" className="w-full h-full object-contain drop-shadow-xl" />
+          </div>
+          <h1 className="text-4xl md:text-5xl font-outfit font-black tracking-tight text-white">TaalVibe</h1>
         </div>
         
-        <p className="text-2xl md:text-4xl text-gray-600 font-bold font-nunito mb-12 max-w-3xl mx-auto drop-shadow-sm leading-relaxed">
-          A clean, reusable starting point for your next great idea.
+        <p className="text-xl md:text-3xl text-sonora-text-muted font-medium font-outfit mb-12 max-w-2xl mx-auto drop-shadow-sm leading-relaxed">
+          Your music. Your memories. Your journey.
         </p>
         
-        <div className="flex flex-col sm:flex-row gap-6 justify-center w-full max-w-3xl mt-4">
-          <Link to="/login" className="btn-primary flex-1 text-2xl py-6 flex items-center justify-center gap-4 group bg-blue-600 text-white rounded-2xl hover:bg-blue-700 transition-colors">
+        <div className="flex flex-col sm:flex-row gap-6 justify-center w-full max-w-xl mt-4">
+          <Link to="/login" className="btn-primary flex-1 text-2xl py-5 rounded-2xl flex items-center justify-center gap-4 transition-colors">
             Login
           </Link>
-          <Link to="/signup" className="btn-secondary flex-1 text-2xl py-6 flex items-center justify-center gap-4 group bg-white text-blue-600 border-2 border-blue-600 rounded-2xl hover:bg-blue-50 transition-colors">
+          <Link to="/signup" className="btn-secondary flex-1 text-2xl py-5 rounded-2xl flex items-center justify-center gap-4 transition-colors">
             Sign Up
           </Link>
         </div>

@@ -4,73 +4,69 @@
 
 @layer base {
   body {
-    @apply font-nunito text-kid-text overflow-hidden h-[100dvh] m-0 p-0 overscroll-none;
-    background-color: #F0F9FF; /* kid-bg */
+    @apply font-inter text-sonora-text overflow-hidden h-[100dvh] m-0 p-0 overscroll-none antialiased;
+    background-color: #121212; /* sonora-base */
   }
   #root {
-    @apply h-full w-full flex flex-col overflow-hidden p-1 sm:p-2;
+    @apply h-full w-full flex flex-col overflow-hidden;
   }
-  /* Hide scrollbar completely to enforce app-like feel, unless absolutely necessary */
+  
+  /* Scrollbar styling for web apps */
   ::-webkit-scrollbar {
-    width: 0px;
-    height: 0px;
-    background: transparent; 
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-sonora-border rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-sonora-text-muted;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-outfit;
   }
 }
 
 @layer utilities {
   .app-frame {
-    @apply w-full h-full rounded-[2.5rem] md:rounded-[3.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1),inset_0_2px_4px_rgba(255,255,255,0.8)] border border-white/60 overflow-hidden relative mx-auto max-w-[1600px] bg-white/40 backdrop-blur-3xl;
+    @apply w-full h-full relative overflow-hidden bg-sonora-base;
   }
   
   .glass-panel {
-    @apply bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_32px_rgba(0,0,0,0.06),inset_0_2px_4px_rgba(255,255,255,0.9)] rounded-[2rem];
+    @apply bg-sonora-surface/80 backdrop-blur-xl border border-white/5 shadow-2xl rounded-2xl;
   }
 
-  .text-glow {
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.5);
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
   }
-  
-  .gradient-text-premium {
-    @apply text-transparent bg-clip-text bg-gradient-to-br from-kid-primary via-kid-purple to-kid-secondary font-baloo font-black;
-    -webkit-text-stroke: 1.5px white;
-    filter: drop-shadow(0 3px 0 rgba(139, 92, 246, 0.3)) drop-shadow(0 6px 8px rgba(0, 0, 0, 0.15));
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }
 
 @layer components {
-  /* Premium Glossy 3D Cards */
   .glass-card {
-    @apply glass-panel transition-all duration-300 relative overflow-hidden hover:shadow-[0_12px_40px_rgba(0,0,0,0.1),inset_0_2px_4px_rgba(255,255,255,0.9)] hover:-translate-y-1;
+    @apply glass-panel transition-all duration-300 relative overflow-hidden hover:bg-sonora-surface-hover/80;
   }
   
-  .glass-card-premium {
-    @apply relative rounded-[2rem] overflow-hidden cursor-pointer flex flex-col p-6 shadow-lg hover:shadow-2xl hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 border-4 border-white/60 hover:border-white;
-  }
-  
-  /* Bright playful text */
-  .gradient-text {
-    @apply gradient-text-premium;
-  }
-  
-  /* Premium Glossy Primary Button */
   .btn-primary {
-    @apply relative px-8 py-4 bg-gradient-to-b from-kid-primary to-kid-primary-dark text-white font-baloo font-black text-2xl rounded-[1.5rem] border border-white/40 shadow-[0_8px_16px_rgba(59,130,246,0.3),inset_0_4px_8px_rgba(255,255,255,0.4)] active:shadow-[0_2px_4px_rgba(59,130,246,0.3),inset_0_1px_2px_rgba(255,255,255,0.4)] active:translate-y-2 transition-all duration-300 flex items-center justify-center gap-3 select-none overflow-hidden hover:scale-105 hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(59,130,246,0.4)];
+    @apply relative px-6 py-3 bg-sonora-primary text-sonora-base font-outfit font-semibold text-lg rounded-full transition-all duration-300 flex items-center justify-center gap-2 select-none hover:bg-sonora-primary-hover hover:scale-[1.02] active:scale-95;
   }
   
-  .btn-primary::after {
-    content: '';
-    @apply absolute top-0 left-[-100%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-[-20deg];
-    animation: shine 3s infinite;
-  }
-  
-  /* Premium Glossy Secondary Button */
   .btn-secondary {
-    @apply relative px-8 py-4 bg-white/90 backdrop-blur-sm text-kid-primary-dark font-baloo font-black text-xl rounded-[1.5rem] border-2 border-kid-primary/20 shadow-[0_8px_16px_rgba(0,0,0,0.05),inset_0_4px_8px_rgba(255,255,255,0.8)] hover:bg-white active:shadow-[0_2px_4px_rgba(0,0,0,0.05)] active:translate-y-2 transition-all duration-300 flex items-center justify-center gap-3 select-none hover:scale-105 hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.1)];
-  }
-  
-  /* Generic Premium Button Base (for custom colors) */
-  .btn-chunky {
-    @apply relative px-8 py-4 text-white font-baloo font-black text-xl rounded-[1.5rem] border border-white/40 active:translate-y-2 transition-all duration-200 flex items-center justify-center gap-2 select-none overflow-hidden hover:scale-[1.02];
+    @apply relative px-6 py-3 bg-sonora-surface text-sonora-text font-outfit font-medium text-lg rounded-full border border-sonora-border transition-all duration-300 flex items-center justify-center gap-2 select-none hover:bg-sonora-surface-hover hover:border-white/20 active:scale-95;
   }
 }
