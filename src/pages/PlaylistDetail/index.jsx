@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLibrary } from '../../contexts/LibraryContext';
 import { usePlayer } from '../../contexts/PlayerContext';
-import { Play, ListMusic, Trash2, Edit2, X } from 'lucide-react';
+import { Play, ListMusic, Trash2, Edit2, X, ArrowLeft } from 'lucide-react';
 import CloudMusicService from '../../services/CloudMusicService';
 import SongRow from '../../components/common/SongRow';
 
@@ -41,6 +41,14 @@ const PlaylistDetail = () => {
     }
   }, [id, playlists]);
 
+  const handleBack = () => {
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      navigate('/playlists');
+    }
+  };
+
   const handleDeletePlaylist = async () => {
     if (window.confirm('Are you sure you want to delete this playlist?')) {
       await deletePlaylist(playlist.id);
@@ -66,7 +74,19 @@ const PlaylistDetail = () => {
   if (!playlist) return <div>Playlist not found</div>;
 
   return (
-    <div className="w-full h-full flex flex-col gap-6">
+    <div className="w-full h-full flex flex-col gap-6 overflow-y-auto hide-scrollbar pb-24 md:pb-8">
+      {/* Top Back Bar */}
+      <div>
+        <button 
+          onClick={handleBack} 
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 active:scale-95 border border-white/10 text-white/90 hover:text-white transition-all text-xs font-medium shadow-sm"
+          aria-label="Go back"
+        >
+          <ArrowLeft size={16} />
+          <span>Back to Playlists</span>
+        </button>
+      </div>
+
       <div className="flex items-end gap-4 relative">
         <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
           {playlist.cover_art_url ? (

@@ -2,8 +2,9 @@ import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLibrary } from '../../contexts/LibraryContext';
 import { usePlayer } from '../../contexts/PlayerContext';
-import { Play, Heart, Clock, ListMusic, Settings, MoreVertical, Plus, Download } from 'lucide-react';
+import { Play, Heart, Clock, ListMusic, Settings, MoreVertical, Plus, Download, Sparkles } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import CloudMusicService from '../../services/CloudMusicService';
 import { usePWAInstall } from '../../contexts/PWAInstallContext';
 import SongRow from '../../components/common/SongRow';
 import AddToPlaylistModal from '../../components/common/AddToPlaylistModal';
@@ -14,7 +15,34 @@ const Dashboard = () => {
   const { songs, recentPlays, toggleFavorite } = useLibrary();
   const { playContext } = usePlayer();
   const [modalSongId, setModalSongId] = React.useState(null);
+  const [drivePlaylists, setDrivePlaylists] = React.useState(() => {
+    try {
+      const cached = sessionStorage.getItem('tv_drive_playlists');
+      if (cached) return JSON.parse(cached);
+    } catch {}
+    return [
+      { id: 1, name: 'TaalVibe Special', slug: 'taalvibe-special', description: 'Handpicked hits & exclusive tracks', gradient: 'from-[#ff0f7b] to-[#f89b29]' },
+      { id: 2, name: 'Old Songs', slug: 'old-songs', description: 'Golden retro hits & evergreen melodies', gradient: 'from-[#4facfe] to-[#00f2fe]', songCount: 99 },
+      { id: 3, name: 'Romantic Songs', slug: 'romantic-songs', description: 'Soulful acoustic & love melodies', gradient: 'from-[#8E2DE2] to-[#4A00E0]' },
+      { id: 4, name: 'Feel Good & Chill', slug: 'feel-good', description: 'Uplifting beats & pleasant vibes', gradient: 'from-[#11998e] to-[#38ef7d]' },
+    ];
+  });
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    CloudMusicService.getFeaturedPlaylists()
+      .then((data) => {
+        if (data && data.length > 0) {
+          setDrivePlaylists(data);
+          try {
+            sessionStorage.setItem('tv_drive_playlists', JSON.stringify(data));
+          } catch {}
+        }
+      })
+      .catch((err) => {
+        console.warn('Failed to load featured playlists:', err);
+      });
+  }, []);
 
   const handlePlaySong = (songsArray, index) => {
     playContext(songsArray, index);
@@ -34,112 +62,96 @@ const Dashboard = () => {
     <div className="w-full h-full flex flex-col gap-6 overflow-y-auto hide-scrollbar pb-24 md:pb-8">
       
       {/* Top Header Section */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex-1 flex items-center justify-start overflow-hidden">
+      <div className="flex items-center justify-between mb-6 gap-2">
+        <div className="flex-1 min-w-0 flex items-center justify-start overflow-hidden">
           <img 
             src="/taalvibe-logo.jpg" 
             alt="TaalVibe" 
-            className="w-48 sm:w-64 md:w-72 h-16 md:h-20 object-cover object-left mix-blend-screen scale-[1.3] origin-left -ml-2" 
+            className="w-40 sm:w-64 md:w-72 h-14 sm:h-16 md:h-20 object-cover object-left mix-blend-screen scale-[1.2] sm:scale-[1.3] origin-left -ml-1.5 sm:-ml-2" 
           />
         </div>
         
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {!isStandalone && (
             <button
               onClick={promptInstall}
-              className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-full bg-gradient-to-r from-pink-500/20 to-purple-600/20 border border-pink-500/30 hover:border-pink-500/60 text-white transition-all text-xs sm:text-sm font-semibold shadow-md hover:shadow-pink-500/20 hover:scale-105 active:scale-95"
+              className="w-10 h-10 sm:w-auto sm:h-auto sm:px-4 sm:py-2 rounded-full bg-gradient-to-r from-pink-500/20 to-purple-600/20 border border-pink-500/30 hover:border-pink-500/60 text-white transition-all text-xs sm:text-sm font-semibold shadow-md hover:shadow-pink-500/20 hover:scale-105 active:scale-95 flex items-center justify-center sm:gap-2 shrink-0"
               title="Download & Install TaalVibe App"
+              aria-label="Download App"
             >
-              <Download size={15} className="text-pink-400" />
-              <span>Download App</span>
+              <Download size={18} className="text-pink-400 shrink-0" />
+              <span className="hidden sm:inline">Download App</span>
             </button>
           )}
-          <Link to="/settings" className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all shadow-sm">
+          <Link 
+            to="/settings" 
+            className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all shadow-sm shrink-0"
+            aria-label="Settings"
+          >
             <Settings size={20} />
           </Link>
-          <div className="hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-fuchsia-500 font-bold text-white shadow-lg border border-white/10">
+          <div className="hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-fuchsia-500 font-bold text-white shadow-lg border border-white/10 shrink-0">
             {(user?.firstName?.[0] || user?.email?.[0] || 'U').toUpperCase()}
           </div>
         </div>
       </div>
 
-      {/* Moods & Moments (Driving, Party, Sad, Chill) */}
+      {/* Featured Playlists from Google Drive */}
       <section className="mb-4">
-        <h2 className="text-2xl font-outfit font-bold text-white mb-4 tracking-tight">Moods & Moments</h2>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-2xl font-outfit font-bold text-white tracking-tight flex items-center gap-2">
+              <Sparkles size={22} className="text-pink-400" />
+              Featured Playlists
+            </h2>
+            <p className="text-xs sm:text-sm text-sonora-text-muted mt-0.5">
+              Curated playlists streamed directly from your Google Drive
+            </p>
+          </div>
+          {user?.role === 'admin' && (
+            <Link
+              to="/settings"
+              className="text-xs font-semibold text-pink-400 hover:text-pink-300 flex items-center gap-1 bg-pink-500/10 hover:bg-pink-500/20 px-3 py-1.5 rounded-full border border-pink-500/20 transition-colors"
+            >
+              Manage Folders →
+            </Link>
+          )}
+        </div>
+
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-          
-          {/* Party Playlist */}
-          <button
-            onClick={() => navigate('/mood/party')}
-            className="relative overflow-hidden rounded-2xl h-28 md:h-36 group text-left shadow-lg hover:shadow-2xl border border-white/10 hover:border-white/25 transition-all duration-300"
-          >
-            <div className="absolute inset-0 group-hover:scale-110 transition-transform duration-700">
-              <img src="/moods/party.jpg" alt="Party Vibes" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/40"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-            </div>
-            <div className="absolute inset-0 p-4 flex flex-col justify-between z-10">
-              <h3 className="font-outfit font-bold text-lg md:text-xl text-white drop-shadow-md">Party Vibes</h3>
-              <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
-                <Play size={18} className="text-white fill-white ml-1" />
-              </div>
-            </div>
-          </button>
+          {drivePlaylists.map((pl) => (
+            <button
+              key={pl.id}
+              onClick={() => navigate(`/mood/${pl.slug || pl.id}`)}
+              className="relative overflow-hidden rounded-2xl h-32 md:h-40 group text-left shadow-lg hover:shadow-2xl border border-white/10 hover:border-white/25 transition-all duration-300 transform hover:-translate-y-1"
+            >
+              {/* Background gradient & styling */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${pl.gradient || 'from-pink-500 to-purple-600'} opacity-80 group-hover:opacity-95 transition-opacity`}></div>
+              <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"></div>
 
-          {/* Driving Playlist */}
-          <button
-            onClick={() => navigate('/mood/driving')}
-            className="relative overflow-hidden rounded-2xl h-28 md:h-36 group text-left shadow-lg hover:shadow-2xl border border-white/10 hover:border-white/25 transition-all duration-300"
-          >
-            <div className="absolute inset-0 group-hover:scale-110 transition-transform duration-700">
-              <img src="/moods/driving.jpg" alt="Driving" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/40"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-            </div>
-            <div className="absolute inset-0 p-4 flex flex-col justify-between z-10">
-              <h3 className="font-outfit font-bold text-lg md:text-xl text-white drop-shadow-md">Driving</h3>
-              <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
-                <Play size={18} className="text-white fill-white ml-1" />
-              </div>
-            </div>
-          </button>
+              {/* Content */}
+              <div className="absolute inset-0 p-4 flex flex-col justify-between z-10">
+                <div className="flex items-start justify-between">
+                  <span className="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-sm border border-white/20">
+                    <ListMusic size={16} />
+                  </span>
+                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-black/40 text-white/90 border border-white/10 backdrop-blur-sm">
+                    {pl.songCount !== undefined ? `${pl.songCount} ${pl.songCount === 1 ? 'song' : 'songs'}` : 'Drive'}
+                  </span>
+                </div>
 
-          {/* Sad/Chill Playlist */}
-          <button
-            onClick={() => navigate('/mood/sad')}
-            className="relative overflow-hidden rounded-2xl h-28 md:h-36 group text-left shadow-lg hover:shadow-2xl border border-white/10 hover:border-white/25 transition-all duration-300"
-          >
-            <div className="absolute inset-0 group-hover:scale-110 transition-transform duration-700">
-              <img src="/moods/sad.jpg" alt="Late Night Sad" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/40"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-            </div>
-            <div className="absolute inset-0 p-4 flex flex-col justify-between z-10">
-              <h3 className="font-outfit font-bold text-lg md:text-xl text-white drop-shadow-md">Late Night Sad</h3>
-              <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
-                <Play size={18} className="text-white fill-white ml-1" />
+                <div>
+                  <h3 className="font-outfit font-bold text-base md:text-lg text-white drop-shadow-md leading-snug line-clamp-1">
+                    {pl.name}
+                  </h3>
+                  <p className="text-[11px] text-white/70 line-clamp-1 mt-0.5">
+                    {pl.description || 'Google Drive Playlist'}
+                  </p>
+                </div>
               </div>
-            </div>
-          </button>
-
-          {/* Focus/Travel Playlist */}
-          <button
-            onClick={() => navigate('/mood/chill')}
-            className="relative overflow-hidden rounded-2xl h-28 md:h-36 group text-left shadow-lg hover:shadow-2xl border border-white/10 hover:border-white/25 transition-all duration-300"
-          >
-            <div className="absolute inset-0 group-hover:scale-110 transition-transform duration-700">
-              <img src="/moods/chill.jpg" alt="Travel & Focus" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/40"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-            </div>
-            <div className="absolute inset-0 p-4 flex flex-col justify-between z-10">
-              <h3 className="font-outfit font-bold text-lg md:text-xl text-white drop-shadow-md">Travel & Focus</h3>
-              <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
-                <Play size={18} className="text-white fill-white ml-1" />
-              </div>
-            </div>
-          </button>
-
+            </button>
+          ))}
         </div>
       </section>
 
@@ -160,7 +172,7 @@ const Dashboard = () => {
                   onClick={() => handlePlaySong(songs, index)}
                 >
                   <img 
-                    src={song.coverUrl || '/default-cover.jpg'} 
+                    src="/default-cover.jpg" 
                     className="w-full aspect-square object-cover rounded-[16px] shadow-lg group-hover:shadow-2xl group-hover:shadow-sonora-primary/20 transition-all duration-300" 
                     alt={song.title} 
                   />

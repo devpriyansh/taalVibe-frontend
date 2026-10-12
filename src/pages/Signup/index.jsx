@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Mail, Lock, UserPlus, CheckCircle2, Loader2 } from 'lucide-react';
@@ -21,8 +21,12 @@ const Signup = () => {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [isOtpLoading, setIsOtpLoading] = useState(false);
   
-  const { register } = useAuth();
+  const { register, user } = useAuth();
   const navigate = useNavigate();
+
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
@@ -105,7 +109,7 @@ const Signup = () => {
     setIsLoading(false);
 
     if (res.success) {
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } else {
       setError(res.message);
     }

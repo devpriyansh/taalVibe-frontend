@@ -12,6 +12,27 @@ const BottomPlayer = () => {
 
   const [isNowPlayingOpen, setIsNowPlayingOpen] = useState(false);
 
+  useEffect(() => {
+    if (isNowPlayingOpen) {
+      window.history.pushState({ modal: 'now-playing' }, '');
+      const handlePopState = () => {
+        setIsNowPlayingOpen(false);
+      };
+      window.addEventListener('popstate', handlePopState);
+      return () => {
+        window.removeEventListener('popstate', handlePopState);
+      };
+    }
+  }, [isNowPlayingOpen]);
+
+  const handleCloseNowPlaying = () => {
+    if (window.history.state?.modal === 'now-playing') {
+      window.history.back();
+    } else {
+      setIsNowPlayingOpen(false);
+    }
+  };
+
   // Setup Media Session API
   useEffect(() => {
     if ('mediaSession' in navigator && currentSong) {
@@ -152,7 +173,7 @@ const BottomPlayer = () => {
         }`}
       >
         <div className="flex items-center justify-between p-4 pt-safe">
-          <button onClick={() => setIsNowPlayingOpen(false)} className="p-3 -ml-3 text-sonora-text">
+          <button onClick={handleCloseNowPlaying} className="p-3 -ml-3 text-sonora-text active:scale-95 transition-transform" aria-label="Close now playing">
             <ChevronDown size={32} />
           </button>
           <span className="text-xs font-outfit uppercase tracking-widest text-sonora-text-muted font-medium">Now Playing</span>

@@ -80,6 +80,43 @@ class CloudMusicService {
     const res = await api.get('/music/history/recently-played');
     return res.data.result.songs;
   }
+
+  // --- FEATURED / DRIVE PLAYLISTS ---
+
+  async getFeaturedPlaylists() {
+    const res = await api.get('/music/featured-playlists');
+    return res.data.result.playlists;
+  }
+
+  async getFeaturedPlaylist(idOrSlug) {
+    const res = await api.get(`/music/featured-playlists/${idOrSlug}`);
+    return res.data.result;
+  }
+
+  async getAdminDriveFolders() {
+    const res = await api.get('/music/admin/drive-folders');
+    return res.data.result.folders;
+  }
+
+  async createFeaturedPlaylist(data) {
+    const res = await api.post('/music/admin/featured-playlists', data);
+    return res.data.result.playlist;
+  }
+
+  async updateFeaturedPlaylist(id, data) {
+    const res = await api.put(`/music/admin/featured-playlists/${id}`, data);
+    return res.data.result.playlist;
+  }
+
+  async deleteFeaturedPlaylist(id) {
+    const res = await api.delete(`/music/admin/featured-playlists/${id}`);
+    return res.data.result;
+  }
+
+  async syncFeaturedPlaylist(id) {
+    const res = await api.post(`/music/admin/featured-playlists/${id}/sync`);
+    return res.data.result;
+  }
 }
 
 export default new CloudMusicService();

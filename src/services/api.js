@@ -7,14 +7,17 @@ export const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-let activeRequests = 0;
+let activeLoaders = 0;
 
 // Request interceptor for API calls
 api.interceptors.request.use(
   async (config) => {
-    activeRequests++;
-    if (activeRequests === 1) {
-      window.dispatchEvent(new Event('api_load_start'));
+    // Only dispatch global loader when explicitly requested (e.g. blocking operations)
+    if (config.showGlobalLoader) {
+      activeLoaders++;
+      if (activeLoaders === 1) {
+        window.dispatchEvent(new Event('api_load_start'));
+      }
     }
 
     const token = localStorage.getItem('token');
@@ -28,26 +31,32 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
-    activeRequests--;
-    if (activeRequests === 0) {
-      window.dispatchEvent(new Event('api_load_end'));
+    if (error?.config?.showGlobalLoader) {
+      activeLoaders = Math.max(0, activeLoaders - 1);
+      if (activeLoaders === 0) {
+        window.dispatchEvent(new Event('api_load_end'));
+      }
     }
-    Promise.reject(error);
+    return Promise.reject(error);
   }
 );
 
 api.interceptors.response.use(
   (response) => {
-    activeRequests--;
-    if (activeRequests === 0) {
-      window.dispatchEvent(new Event('api_load_end'));
+    if (response?.config?.showGlobalLoader) {
+      activeLoaders = Math.max(0, activeLoaders - 1);
+      if (activeLoaders === 0) {
+        window.dispatchEvent(new Event('api_load_end'));
+      }
     }
     return response;
   },
   (error) => {
-    activeRequests--;
-    if (activeRequests === 0) {
-      window.dispatchEvent(new Event('api_load_end'));
+    if (error?.config?.showGlobalLoader) {
+      activeLoaders = Math.max(0, activeLoaders - 1);
+      if (activeLoaders === 0) {
+        window.dispatchEvent(new Event('api_load_end'));
+      }
     }
     return Promise.reject(error);
   }

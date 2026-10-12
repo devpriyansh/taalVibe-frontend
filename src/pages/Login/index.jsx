@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Mail, Lock, LogIn } from 'lucide-react';
 import GoogleAuthButton from '../../components/auth/GoogleAuthButton';
@@ -9,8 +9,12 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
+
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,7 +23,7 @@ const Login = () => {
     const res = await login(email, password);
     setIsLoading(false);
     if (res.success) {
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } else {
       setError(res.message);
     }

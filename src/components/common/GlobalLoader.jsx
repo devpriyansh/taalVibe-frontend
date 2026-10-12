@@ -29,11 +29,8 @@ const GlobalLoader = () => {
   if (!loading) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm transition-all duration-300">
-      <div className="bg-sonora-surface p-6 rounded-2xl shadow-2xl border border-sonora-border flex flex-col items-center gap-4 animate-in fade-in zoom-in duration-200">
-        <Loader2 size={40} className="text-sonora-primary animate-spin" />
-        <p className="text-sonora-text font-outfit font-medium">Processing...</p>
-      </div>
+    <div className="fixed top-0 left-0 right-0 z-[9999] h-1 pointer-events-none overflow-hidden">
+      <div className="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 animate-pulse w-full shadow-[0_0_8px_rgba(236,72,153,0.6)]" />
     </div>
   );
 };
