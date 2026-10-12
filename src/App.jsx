@@ -19,7 +19,8 @@ const Playlists = lazy(() => import('./pages/Playlists'))
 const PlaylistDetail = lazy(() => import('./pages/PlaylistDetail'))
 const MoodDetail = lazy(() => import('./pages/MoodDetail'))
 import GlobalLoader from './components/common/GlobalLoader'
-
+import { PWAInstallProvider } from './contexts/PWAInstallContext'
+import DownloadAppBanner from './components/common/DownloadAppBanner'
 
 const Loader = () => (
   <div className="flex items-center justify-center h-full w-full bg-sonora-base text-sonora-text">
@@ -30,11 +31,14 @@ const Loader = () => (
 function App() {
   return (
     <AuthProvider>
-      <LibraryProvider>
-        <PlayerProvider>
-          <GlobalLoader />
-          <Suspense fallback={<Loader />}>
-            <div className="app-frame bg-sonora-base text-sonora-text relative overflow-hidden">
+      <PWAInstallProvider>
+        <LibraryProvider>
+          <PlayerProvider>
+            <GlobalLoader />
+            <Suspense fallback={<Loader />}>
+              <div className="app-frame bg-sonora-base text-sonora-text relative overflow-hidden flex flex-col">
+                <DownloadAppBanner />
+                <div className="flex-1 overflow-hidden relative">
               <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/login" element={<Login />} />
@@ -56,10 +60,12 @@ function App() {
                               
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>
-            </div>
-          </Suspense>
-        </PlayerProvider>
-      </LibraryProvider>
+                </div>
+              </div>
+            </Suspense>
+          </PlayerProvider>
+        </LibraryProvider>
+      </PWAInstallProvider>
     </AuthProvider>
   )
 }

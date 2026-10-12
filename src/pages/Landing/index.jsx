@@ -1,10 +1,13 @@
 import React from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { usePWAInstall } from '../../contexts/PWAInstallContext';
+import { Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Landing = () => {
   const { user } = useAuth();
+  const { isStandalone, promptInstall } = usePWAInstall();
 
   if (user) {
     return <Navigate to="/dashboard" replace />;
@@ -40,6 +43,16 @@ const Landing = () => {
             Sign Up
           </Link>
         </div>
+
+        {!isStandalone && (
+          <button
+            onClick={promptInstall}
+            className="mt-6 px-6 py-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-pink-500/30 text-white font-outfit font-semibold flex items-center justify-center gap-2.5 transition-all shadow-lg hover:shadow-pink-500/10 active:scale-95 group text-lg"
+          >
+            <Download size={20} className="text-pink-400 group-hover:translate-y-0.5 transition-transform" />
+            <span>Download App</span>
+          </button>
+        )}
       </motion.div>
     </div>
   );

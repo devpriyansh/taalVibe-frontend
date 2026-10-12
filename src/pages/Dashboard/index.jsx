@@ -2,13 +2,15 @@ import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLibrary } from '../../contexts/LibraryContext';
 import { usePlayer } from '../../contexts/PlayerContext';
-import { Play, Heart, Clock, ListMusic, Settings, MoreVertical, Plus } from 'lucide-react';
+import { Play, Heart, Clock, ListMusic, Settings, MoreVertical, Plus, Download } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { usePWAInstall } from '../../contexts/PWAInstallContext';
 import SongRow from '../../components/common/SongRow';
 import AddToPlaylistModal from '../../components/common/AddToPlaylistModal';
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const { isStandalone, promptInstall } = usePWAInstall();
   const { songs, recentPlays, toggleFavorite } = useLibrary();
   const { playContext } = usePlayer();
   const [modalSongId, setModalSongId] = React.useState(null);
@@ -41,7 +43,17 @@ const Dashboard = () => {
           />
         </div>
         
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
+          {!isStandalone && (
+            <button
+              onClick={promptInstall}
+              className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-full bg-gradient-to-r from-pink-500/20 to-purple-600/20 border border-pink-500/30 hover:border-pink-500/60 text-white transition-all text-xs sm:text-sm font-semibold shadow-md hover:shadow-pink-500/20 hover:scale-105 active:scale-95"
+              title="Download & Install TaalVibe App"
+            >
+              <Download size={15} className="text-pink-400" />
+              <span>Download App</span>
+            </button>
+          )}
           <Link to="/settings" className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all shadow-sm">
             <Settings size={20} />
           </Link>

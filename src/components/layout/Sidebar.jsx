@@ -1,10 +1,12 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { Home, Library, Heart, ListMusic, Settings, LogOut } from 'lucide-react';
+import { usePWAInstall } from '../../contexts/PWAInstallContext';
+import { Home, Library, Heart, ListMusic, Settings, LogOut, ArrowDownToLine } from 'lucide-react';
 
 const Sidebar = () => {
   const { logout } = useAuth();
+  const { isStandalone, promptInstall } = usePWAInstall();
 
   const navItems = [
     { to: '/dashboard', label: 'Home', icon: Home, end: true },
@@ -43,7 +45,19 @@ const Sidebar = () => {
         })}
       </nav>
 
-      <div className="pt-6 border-t border-sonora-border">
+      <div className="pt-6 border-t border-sonora-border space-y-2">
+        {!isStandalone && (
+          <button
+            onClick={promptInstall}
+            className="flex items-center gap-3 px-4 py-3 w-full rounded-xl bg-gradient-to-r from-pink-500/10 to-purple-500/10 border border-pink-500/20 text-pink-400 hover:text-white hover:border-pink-500/40 hover:bg-pink-500/20 transition-all duration-200 font-medium group text-left"
+          >
+            <ArrowDownToLine size={20} className="group-hover:translate-y-0.5 transition-transform flex-shrink-0" />
+            <div className="flex flex-col">
+              <span className="text-sm font-semibold">Download App</span>
+              <span className="text-[11px] text-sonora-text-muted group-hover:text-white/80">Install TaalVibe App</span>
+            </div>
+          </button>
+        )}
         <button
           onClick={() => logout()}
           className="flex items-center gap-4 px-4 py-3 w-full rounded-xl text-sonora-text-muted hover:text-red-400 hover:bg-red-400/10 transition-all duration-200 font-medium"
