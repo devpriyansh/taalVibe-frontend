@@ -19,7 +19,7 @@ const Playlists = lazy(() => import('./pages/Playlists'))
 const PlaylistDetail = lazy(() => import('./pages/PlaylistDetail'))
 const MoodDetail = lazy(() => import('./pages/MoodDetail'))
 import GlobalLoader from './components/common/GlobalLoader'
-import SplashScreen from './components/common/SplashScreen'
+
 
 const Loader = () => (
   <div className="flex items-center justify-center h-full w-full bg-sonora-base text-sonora-text">
@@ -33,7 +33,6 @@ function App() {
       <LibraryProvider>
         <PlayerProvider>
           <GlobalLoader />
-          <SplashScreen />
           <Suspense fallback={<Loader />}>
             <div className="app-frame bg-sonora-base text-sonora-text relative overflow-hidden">
               <Routes>

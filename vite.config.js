@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'default-cover.jpg'],
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'default-cover.jpg', 'taalvibe-splash.png'],
       manifest: {
         name: 'TaalVibe Music',
         short_name: 'TaalVibe',
@@ -32,6 +32,12 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
+          },
+          {
+            src: 'taalvibe-splash.png',
+            sizes: '1024x1024',
+            type: 'image/png',
+            purpose: 'any'
           }
         ]
       },
