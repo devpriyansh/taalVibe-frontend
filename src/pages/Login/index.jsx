@@ -112,6 +112,12 @@ const Login = () => {
             Sign up
           </Link>
         </p>
+
+        <div className="mt-6 pt-4 border-t border-white/5 text-center">
+          <Link to="/privacy-policy" className="text-xs text-sonora-text-muted hover:text-white transition-colors">
+            Privacy Policy
+          </Link>
+        </div>
       </div>
     </div>
   );

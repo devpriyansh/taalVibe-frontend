@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import CloudMusicService from '../services/CloudMusicService';
 import { useLibrary } from '../contexts/LibraryContext';
 import { useAuth } from '../contexts/AuthContext';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { 
   LogOut, 
   User, 
@@ -16,7 +16,8 @@ import {
   Music, 
   ChevronRight,
   FolderSearch,
-  ArrowLeft
+  ArrowLeft,
+  ExternalLink
 } from 'lucide-react';
 
 const Settings = () => {
@@ -637,6 +638,23 @@ const Settings = () => {
             <li><strong>Android / Chrome / Desktop:</strong> Click the <span className="text-white font-semibold">Download App</span> button in the top banner or select <span className="text-white font-semibold">"Install app"</span> from your browser menu.</li>
           </ul>
         </div>
+      </div>
+
+      {/* Privacy & Legal */}
+      <div className="bg-sonora-surface rounded-2xl p-6 shadow-sm border border-white/5 mt-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-base font-outfit font-semibold text-white">Privacy & Policy</h2>
+          <p className="text-xs text-sonora-text-muted mt-0.5">
+            Learn how TaalVibe collects, handles, and protects your account details and Google Drive data.
+          </p>
+        </div>
+        <Link
+          to="/privacy-policy"
+          className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/90 hover:text-white border border-white/10 text-xs font-semibold transition-all inline-flex items-center gap-1.5 self-start sm:self-auto"
+        >
+          <span>View Privacy Policy</span>
+          <ExternalLink size={13} />
+        </Link>
       </div>
     </div>
   );

@@ -65,6 +65,15 @@ const Sidebar = () => {
           <LogOut size={20} />
           Sign Out
         </button>
+
+        <div className="pt-1 text-center">
+          <NavLink
+            to="/privacy-policy"
+            className="text-[11px] text-sonora-text-muted hover:text-white transition-colors inline-block py-1"
+          >
+            Privacy Policy
+          </NavLink>
+        </div>
       </div>
     </div>
   );

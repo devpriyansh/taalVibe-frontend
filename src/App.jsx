@@ -18,6 +18,7 @@ const Favorites = lazy(() => import('./pages/Favorites'))
 const Playlists = lazy(() => import('./pages/Playlists'))
 const PlaylistDetail = lazy(() => import('./pages/PlaylistDetail'))
 const MoodDetail = lazy(() => import('./pages/MoodDetail'))
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
 import GlobalLoader from './components/common/GlobalLoader'
 import { PWAInstallProvider } from './contexts/PWAInstallContext'
 import DownloadAppBanner from './components/common/DownloadAppBanner'
@@ -43,6 +44,7 @@ function App() {
                 <Route path="/" element={<Landing />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 
                 <Route element={<ProtectedRoute />}>
                   <Route element={<RootLayout />}>

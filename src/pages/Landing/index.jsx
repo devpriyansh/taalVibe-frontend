@@ -53,6 +53,15 @@ const Landing = () => {
             <span>Download App</span>
           </button>
         )}
+
+        <div className="mt-8 pt-4 border-t border-white/5 w-full flex items-center justify-center">
+          <Link 
+            to="/privacy-policy" 
+            className="text-xs text-sonora-text-muted hover:text-white transition-colors"
+          >
+            Privacy Policy
+          </Link>
+        </div>
       </motion.div>
     </div>
   );
