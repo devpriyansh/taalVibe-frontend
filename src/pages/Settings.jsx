@@ -75,6 +75,13 @@ const Settings = () => {
   useEffect(() => {
     loadStatus();
     loadFeaturedPlaylists();
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('drive') === 'connected') {
+      setStatusMessage('Google Drive connected successfully!');
+      setTimeout(() => setStatusMessage(''), 5000);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   }, [location]);
 
   const handleConnect = async () => {
@@ -274,23 +281,47 @@ const Settings = () => {
                 <Folder size={22} className="text-sonora-primary" />
                 Central Google Drive Connection
               </h2>
-              {driveStatus?.connected && (
-                <span className="text-xs bg-green-500/20 text-green-400 border border-green-500/30 px-2.5 py-1 rounded-full font-medium">
-                  Connected ✓
+              {driveStatus?.connected ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs bg-green-500/20 text-green-400 border border-green-500/30 px-2.5 py-1 rounded-full font-medium">
+                    Connected ✓
+                  </span>
+                  <button
+                    onClick={handleConnect}
+                    className="text-xs bg-white/5 hover:bg-white/10 text-white/80 hover:text-white border border-white/10 px-2.5 py-1 rounded-full font-medium transition-colors"
+                    title="Refresh Google OAuth connection"
+                  >
+                    Reconnect
+                  </button>
+                </div>
+              ) : driveStatus?.status === 'EXPIRED' ? (
+                <span className="text-xs bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2.5 py-1 rounded-full font-medium">
+                  Token Expired ⚠
                 </span>
-              )}
+              ) : null}
             </div>
 
             {!driveStatus?.connected ? (
-              <div>
-                <p className="text-sonora-text-muted text-sm mb-4">
+              <div className="space-y-4">
+                {driveStatus?.status === 'EXPIRED' && (
+                  <div className="p-3.5 bg-amber-500/10 border border-amber-500/30 rounded-xl text-xs text-amber-300 flex items-start gap-2.5">
+                    <span className="text-base leading-none">⚠️</span>
+                    <div>
+                      <p className="font-semibold text-amber-200">Google Drive Token Expired or Revoked</p>
+                      <p className="mt-0.5 text-amber-300/80 leading-relaxed">
+                        Google has invalidated the OAuth refresh token (this happens after 7 days if the OAuth Consent Screen in Google Cloud is in "Testing" status, or if the Google account password changed). Reconnect below to resume song playback and syncing.
+                      </p>
+                    </div>
+                  </div>
+                )}
+                <p className="text-sonora-text-muted text-sm">
                   Connect the shared Google Drive account to stream catalog tracks and playlists.
                 </p>
                 <button 
                   onClick={handleConnect}
                   className="bg-sonora-primary text-black px-6 py-2.5 rounded-xl font-medium hover:bg-opacity-90 transition-all font-outfit shadow-lg shadow-sonora-primary/20"
                 >
-                  Connect Google Drive
+                  {driveStatus?.status === 'EXPIRED' ? 'Reconnect Google Drive' : 'Connect Google Drive'}
                 </button>
               </div>
             ) : (
@@ -333,6 +364,16 @@ const Settings = () => {
                   >
                     <RefreshCw size={16} className={importing ? "animate-spin" : ""} />
                     {importing ? 'Scanning & Syncing...' : 'Sync All Music'}
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between text-xs text-sonora-text-muted pt-2 border-t border-white/5">
+                  <span>Connection: Active</span>
+                  <button
+                    onClick={handleConnect}
+                    className="text-xs text-sonora-text-muted hover:text-white underline transition-colors"
+                  >
+                    Re-authenticate / Switch Google Account
                   </button>
                 </div>
 

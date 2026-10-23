@@ -27,9 +27,15 @@ export const PlayerProvider = ({ children }) => {
 
     audio.addEventListener('timeupdate', handleTimeUpdate);
     audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    const handleError = (e) => {
+      console.error("Audio playback error:", e);
+      setIsPlaying(false);
+    };
+
     audio.addEventListener('ended', handleEnded);
     audio.addEventListener('play', handlePlay);
     audio.addEventListener('pause', handlePause);
+    audio.addEventListener('error', handleError);
 
     return () => {
       audio.removeEventListener('timeupdate', handleTimeUpdate);
@@ -37,6 +43,7 @@ export const PlayerProvider = ({ children }) => {
       audio.removeEventListener('ended', handleEnded);
       audio.removeEventListener('play', handlePlay);
       audio.removeEventListener('pause', handlePause);
+      audio.removeEventListener('error', handleError);
     };
   }, [queue, queueIndex]); // rebind if queue logic needs it, though standard audio events don't strictly need it
 
